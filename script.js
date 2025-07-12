@@ -49,9 +49,20 @@ categoryFilter.addEventListener("change", async (e) => {
   displayProducts(filteredProducts);
 });
 
+
+
+// Cloudflare Worker API endpoint for OpenAI requests
+const API_URL = "https://fancy-dew-f84c.rneha2729.workers.dev/";
+
+
 /* Chat form submission handler - placeholder for OpenAI integration */
 chatForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
+
+
+
   chatWindow.innerHTML = "Connect to the OpenAI API for a response!";
 });
+
+ 
