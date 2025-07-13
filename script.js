@@ -5,6 +5,7 @@ const chatForm = document.getElementById("chatForm");
 const chatWindow = document.getElementById("chatWindow");
 const selectedProductsList = document.getElementById("selectedProductsList");
 const generateRoutineBtn = document.getElementById("generateRoutine");
+const productSearch = document.getElementById("productSearch");
 
 // Cloudflare Worker API endpoint for OpenAI requests
 const API_URL = "https://fancy-dew-f84c.rneha2729.workers.dev/";
@@ -66,11 +67,7 @@ window.selectProductByName = async function (name) {
     updateSelectedProducts();
   }
   // Re-render products to update visual selection
-  const selectedCategory = categoryFilter.value;
-  const filteredProducts = products.filter(
-    (p) => p.category === selectedCategory
-  );
-  displayProducts(filteredProducts);
+  displayFilteredProducts();
 };
 
 /* Update the selected products list in the UI */
@@ -111,18 +108,47 @@ window.clearAllSelectedProducts = function () {
   updateSelectedProducts();
 };
 
-/* Filter and display products when category changes */
-categoryFilter.addEventListener("change", async (e) => {
-  const products = await loadProducts();
-  const selectedCategory = e.target.value;
+// Store the latest filtered products for search + category
+let allProducts = [];
+let currentCategoryProducts = [];
 
-  // Filter products by selected category
-  const filteredProducts = products.filter(
-    (product) => product.category === selectedCategory
-  );
+// Load all products once and set up initial display
+async function initializeProducts() {
+  allProducts = await loadProducts();
+  displayFilteredProducts();
+}
 
-  displayProducts(filteredProducts);
-});
+// Display products based on current category and search
+function displayFilteredProducts() {
+  // Filter by category
+  const selectedCategory = categoryFilter.value;
+  currentCategoryProducts = selectedCategory
+    ? allProducts.filter((p) => p.category === selectedCategory)
+    : allProducts.slice();
+
+  // Further filter by search keyword
+  const searchValue = productSearch.value.trim().toLowerCase();
+  const finalProducts = searchValue
+    ? currentCategoryProducts.filter(
+        (p) =>
+          p.name.toLowerCase().includes(searchValue) ||
+          (p.description &&
+            p.description.toLowerCase().includes(searchValue)) ||
+          (p.brand && p.brand.toLowerCase().includes(searchValue))
+      )
+    : currentCategoryProducts;
+
+  displayProducts(finalProducts);
+}
+
+// Listen for changes in category filter
+categoryFilter.addEventListener("change", displayFilteredProducts);
+
+// Listen for typing in the search field
+productSearch.addEventListener("input", displayFilteredProducts);
+
+// Initialize products on page load
+initializeProducts();
 
 /* Generate routine when button is clicked */
 generateRoutineBtn.addEventListener("click", async () => {
@@ -166,8 +192,13 @@ chatForm.addEventListener("submit", async (e) => {
 
   const userInput = document.getElementById("userInput").value;
 
-  // Add user's message to chat history
-  messages.push({ role: "user", content: userInput });
+  // Add user's message to chat history, asking for current info and links
+  messages.push({
+    role: "user",
+    content: `${userInput}
+    
+    Please provide the most current information about L'Oréal products or routines. If possible, include links or citations to official sources.`,
+  });
 
   chatWindow.textContent = "Thinking...";
 
@@ -184,7 +215,7 @@ chatForm.addEventListener("submit", async (e) => {
     const replyText = result.choices[0].message.content;
 
     messages.push({ role: "assistant", content: replyText });
-    chatWindow.textContent = replyText;
+    chatWindow.innerHTML = replyText; // Use innerHTML to allow links
   } catch (error) {
     chatWindow.textContent = "Sorry, something went wrong. Please try again.";
   }

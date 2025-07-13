@@ -39,6 +39,16 @@
         </select>
       </div>
 
+      <!-- Add this search field above the products grid, inside your main content area -->
+      <div class="search-section">
+        <input
+          type="text"
+          id="productSearch"
+          placeholder="Search products by name or keyword…"
+          autocomplete="off"
+        />
+      </div>
+
       <!-- Products Grid -->
       <div id="productsContainer" class="products-grid"></div>
 
@@ -86,7 +96,7 @@
     </div>
 
     <!-- secrets.js can be removed when using Cloudflare Workers for API requests -->
-    
+
     <script src="script.js"></script>
   </body>
 </html>
