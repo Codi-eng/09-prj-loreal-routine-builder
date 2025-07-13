@@ -9,11 +9,13 @@ const generateRoutineBtn = document.getElementById("generateRoutine");
 // Cloudflare Worker API endpoint for OpenAI requests
 const API_URL = "https://fancy-dew-f84c.rneha2729.workers.dev/";
 
-// Store selected products
+// Load selected products from localStorage when the page loads
 let selectedProducts = [];
-
-// Store chat conversation history
-let messages = [];
+const savedProducts = localStorage.getItem("selectedProducts");
+if (savedProducts) {
+  selectedProducts = JSON.parse(savedProducts);
+  updateSelectedProducts();
+}
 
 /* Show initial placeholder until user selects a category */
 productsContainer.innerHTML = `
@@ -30,19 +32,23 @@ async function loadProducts() {
 }
 
 /* Create HTML for displaying product cards */
+// Students: The description will show when you hover over a product card.
 function displayProducts(products) {
   productsContainer.innerHTML = products
-    .map((product, index) => {
-      // Check if product is selected
+    .map((product) => {
       const isSelected = selectedProducts.some((p) => p.name === product.name);
-      // Add 'selected' class if selected
       return `
         <div class="product-card${isSelected ? " selected" : ""}">
           <img src="${product.image}" alt="${product.name}">
           <div class="product-info">
             <h3>${product.name}</h3>
             <p>${product.brand}</p>
-            <button onclick="selectProduct(${index})">Select</button>
+            <button onclick="selectProductByName('${
+              product.name
+            }')">Select</button>
+          </div>
+          <div class="product-description">
+            ${product.description || "No description available."}
           </div>
         </div>
       `;
@@ -50,12 +56,12 @@ function displayProducts(products) {
     .join("");
 }
 
-/* Select a product and add it to the selectedProducts array */
-window.selectProduct = async function (index) {
+/* Select a product by name and add it to the selectedProducts array */
+window.selectProductByName = async function (name) {
   const products = await loadProducts();
-  const product = products[index];
+  const product = products.find((p) => p.name === name);
   // Only add if not already selected
-  if (!selectedProducts.some((p) => p.name === product.name)) {
+  if (product && !selectedProducts.some((p) => p.name === product.name)) {
     selectedProducts.push(product);
     updateSelectedProducts();
   }
@@ -83,6 +89,8 @@ function updateSelectedProducts() {
     `
     )
     .join("");
+  // Save to localStorage
+  localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
 }
 
 /* Remove a product from the selected list */
