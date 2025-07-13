@@ -54,8 +54,9 @@ body {
 
 /* category filter */
 .search-section {
-  margin: 30px 0;
+  margin-bottom: 18px;
   display: flex;
+  justify-content: flex-end;
 }
 
 .search-section select {
@@ -72,6 +73,23 @@ body {
 .search-section select:focus {
   outline: none;
   border-color: #666;
+}
+
+/* Style for the product search field */
+#productSearch {
+  padding: 10px 16px;
+  font-size: 17px;
+  border: 2px solid var(--accent-gold);
+  border-radius: 8px;
+  width: 320px;
+  background: #fffbe9;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+#productSearch:focus {
+  border-color: var(--primary-red);
+  outline: none;
 }
 
 /* chat section */

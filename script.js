@@ -7,6 +7,10 @@ const selectedProductsList = document.getElementById("selectedProductsList");
 const generateRoutineBtn = document.getElementById("generateRoutine");
 const productSearch = document.getElementById("productSearch");
 
+// Store the latest filtered products for search + category
+let allProducts = [];
+let currentCategoryProducts = [];
+
 // Cloudflare Worker API endpoint for OpenAI requests
 const API_URL = "https://fancy-dew-f84c.rneha2729.workers.dev/";
 
@@ -107,10 +111,6 @@ window.clearAllSelectedProducts = function () {
   selectedProducts = [];
   updateSelectedProducts();
 };
-
-// Store the latest filtered products for search + category
-let allProducts = [];
-let currentCategoryProducts = [];
 
 // Load all products once and set up initial display
 async function initializeProducts() {
