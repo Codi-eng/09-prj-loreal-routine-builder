@@ -32,18 +32,21 @@ async function loadProducts() {
 /* Create HTML for displaying product cards */
 function displayProducts(products) {
   productsContainer.innerHTML = products
-    .map(
-      (product, index) => `
-    <div class="product-card">
-      <img src="${product.image}" alt="${product.name}">
-      <div class="product-info">
-        <h3>${product.name}</h3>
-        <p>${product.brand}</p>
-        <button onclick="selectProduct(${index})">Select</button>
-      </div>
-    </div>
-  `
-    )
+    .map((product, index) => {
+      // Check if product is selected
+      const isSelected = selectedProducts.some((p) => p.name === product.name);
+      // Add 'selected' class if selected
+      return `
+        <div class="product-card${isSelected ? " selected" : ""}">
+          <img src="${product.image}" alt="${product.name}">
+          <div class="product-info">
+            <h3>${product.name}</h3>
+            <p>${product.brand}</p>
+            <button onclick="selectProduct(${index})">Select</button>
+          </div>
+        </div>
+      `;
+    })
     .join("");
 }
 
@@ -56,20 +59,38 @@ window.selectProduct = async function (index) {
     selectedProducts.push(product);
     updateSelectedProducts();
   }
+  // Re-render products to update visual selection
+  const selectedCategory = categoryFilter.value;
+  const filteredProducts = products.filter(
+    (p) => p.category === selectedCategory
+  );
+  displayProducts(filteredProducts);
 };
 
 /* Update the selected products list in the UI */
+// This function displays each selected product and adds a remove button for each.
+// Students: The remove button lets users delete products from their selection.
 function updateSelectedProducts() {
   selectedProductsList.innerHTML = selectedProducts
     .map(
-      (product) => `
+      (product, idx) => `
       <div class="selected-product">
         <span>${product.name} (${product.brand})</span>
+        <button class="remove-btn" onclick="removeSelectedProduct(${idx})" title="Remove">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
     `
     )
     .join("");
 }
+
+/* Remove a product from the selected list */
+// Students: This function removes the product at the given index and updates the UI.
+window.removeSelectedProduct = function (index) {
+  selectedProducts.splice(index, 1);
+  updateSelectedProducts();
+};
 
 /* Filter and display products when category changes */
 categoryFilter.addEventListener("change", async (e) => {

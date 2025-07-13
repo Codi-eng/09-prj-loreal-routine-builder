@@ -248,6 +248,14 @@ body {
   color: #666;
 }
 
+/* Highlight selected product cards in the grid */
+.product-card.selected {
+  border: 6px solid var(--primary-red);
+  box-shadow: 0 0 0 4px rgba(193, 71, 99, 0.08);
+  background: #fff8f4;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
 /* selected products */
 .selected-products {
   margin: 40px 0;
@@ -308,4 +316,29 @@ body {
   background: #fffbe9;
   border-radius: 4px;
   margin-bottom: 6px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.selected-product .remove-btn {
+  background: var(--primary-red);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.selected-product .remove-btn:hover {
+  background: var(--accent-gold);
+  color: #fff;
 }
