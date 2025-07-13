@@ -76,19 +76,24 @@ window.selectProductByName = async function (name) {
 /* Update the selected products list in the UI */
 // This function displays each selected product and adds a remove button for each.
 // Students: The remove button lets users delete products from their selection.
+// There's also a "Clear All" button to remove all selected products at once.
 function updateSelectedProducts() {
-  selectedProductsList.innerHTML = selectedProducts
-    .map(
-      (product, idx) => `
-      <div class="selected-product">
-        <span>${product.name} (${product.brand})</span>
-        <button class="remove-btn" onclick="removeSelectedProduct(${idx})" title="Remove">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-    `
-    )
-    .join("");
+  selectedProductsList.innerHTML =
+    selectedProducts
+      .map(
+        (product, idx) => `
+        <div class="selected-product">
+          <span>${product.name} (${product.brand})</span>
+          <button class="remove-btn" onclick="removeSelectedProduct(${idx})" title="Remove">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      `
+      )
+      .join("") +
+    (selectedProducts.length > 0
+      ? `<button class="clear-btn" onclick="clearAllSelectedProducts()">Clear All</button>`
+      : "");
   // Save to localStorage
   localStorage.setItem("selectedProducts", JSON.stringify(selectedProducts));
 }
@@ -97,6 +102,12 @@ function updateSelectedProducts() {
 // Students: This function removes the product at the given index and updates the UI.
 window.removeSelectedProduct = function (index) {
   selectedProducts.splice(index, 1);
+  updateSelectedProducts();
+};
+
+/* Clear all selected products at once */
+window.clearAllSelectedProducts = function () {
+  selectedProducts = [];
   updateSelectedProducts();
 };
 

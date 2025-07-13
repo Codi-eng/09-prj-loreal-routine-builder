@@ -369,3 +369,23 @@ body {
   background: var(--accent-gold);
   color: #fff;
 }
+
+/* Style for the clear all button */
+.clear-btn {
+  background: var(--accent-gold);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: block;
+  width: 100%;
+}
+
+.clear-btn:hover {
+  background: var(--primary-red);
+}
