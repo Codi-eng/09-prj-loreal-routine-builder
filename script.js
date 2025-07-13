@@ -223,3 +223,6 @@ chatForm.addEventListener("submit", async (e) => {
   // Clear input
   document.getElementById("userInput").value = "";
 });
+
+// Initialize messages array
+let messages = [];
